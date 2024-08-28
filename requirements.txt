@@ -1,0 +1,31 @@
+# Online Banking System
+
+This is an online banking system implemented in Python.
+
+## Setup
+
+1. Create and activate the virtual environment:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+2. Install the dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3. Run the application:
+    ```bash
+    python scripts/banking_app.py
+    ```
+
+4. Run the unit tests:
+    ```bash
+    python -m unittest discover -s tests
+    ```
+
+5. Run performance tests:
+    ```bash
+    python scripts/performance_test.py
+    ```
