@@ -1,6 +1,3 @@
-# import random   # Importing the random module to generate random numbers
-# from onlinebanking_system.hashing import hash_pin
-# from onlinebanking_system.interest import calculate_simple_interest, calculate_compound_interest
 import random
 from onlinebanking_system.hashing import hash_pin
 from onlinebanking_system.interest import calculate_simple_interest, calculate_compound_interest
