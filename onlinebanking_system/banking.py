@@ -1,36 +1,45 @@
-import random  # Importing the random module to generate random numbers
+# import random   # Importing the random module to generate random numbers
+# from onlinebanking_system.hashing import hash_pin
+# from onlinebanking_system.interest import calculate_simple_interest, calculate_compound_interest
+import random
 from onlinebanking_system.hashing import hash_pin
 from onlinebanking_system.interest import calculate_simple_interest, calculate_compound_interest
 
 
+# Defining a class called BankingSystem
 class BankingSystem:
-    def __init__(self):
+    # Constructor method initializes some variables
+    def __init__(self):    # Dictionary to store user information(Implementation of data structure)
         self.users = {}
-        self.logged_in_user = None  # Initialize logged_in_user to keep track of the logged-in user
-
-    def hash_pin(self, pin, salt=None):
-        if salt is None:
-            salt = str(random.randint(1000, 9999))  # Generate a random salt if not provided
-        return hash_pin(pin, salt), salt
+        self.logged_in_user = None
+        self.interest_rate = 0.05  # 5% annual interest rate
 
     def register_user(self, username, pin):
         if username in self.users:
-            print("Username already exists.")
+            print("Username already exists. Please choose another.")
             return False
-        hashed_pin, salt = self.hash_pin(pin)
-        self.users[username] = {'pin': hashed_pin, 'salt': salt, 'balance': 0}
-        print(f"User {username} registered successfully.")
+        # Create a salt and hash the PIN
+        salt = str(random.randint(1000, 9999))
+        hashed_pin = self.hash_pin(pin, salt)
+        self.users[username] = {
+            'pin': hashed_pin,
+            'salt': salt,
+            'balance': 0,
+            'security_question': None,
+            'security_answer': None
+        }
+        print("Registration successful!")
         return True
-
+    
     def login(self, username, pin):
+        # Method to log in a user
         if username not in self.users:
             print("Username not found.")
             return False
 
         user = self.users[username]
-        hashed_pin, _ = self.hash_pin(pin, user['salt'])  # Hash the provided PIN with the stored salt
-
-        if hashed_pin == user['pin']:
+        # Checking if the provided PIN matches the stored hashed PIN
+        if self.hash_pin(pin, user['salt']) == user['pin']:
             self.logged_in_user = username
             print("Login successful!")
             return True
@@ -53,7 +62,7 @@ class BankingSystem:
             return
 
         user = self.users[username]
-        if 'security_question' not in user or not user['security_question']:
+        if not user['security_question']:
             print("No security question set. Unable to recover PIN.")
             return
 
@@ -61,7 +70,8 @@ class BankingSystem:
         answer = input("Your answer: ")
         if answer == user['security_answer']:
             new_pin = input("Enter new PIN: ")
-            hashed_pin, salt = self.hash_pin(new_pin)
+            salt = str(random.randint(1000, 9999))
+            hashed_pin = self.hash_pin(new_pin, salt)
             user['pin'] = hashed_pin
             user['salt'] = salt
             print("PIN reset successful.")
@@ -69,6 +79,7 @@ class BankingSystem:
             print("Incorrect answer. Unable to reset PIN.")
 
     def deposit(self, amount):
+        # Method to deposit money into user's account
         if not self.logged_in_user:
             print("Please log in first.")
             return
@@ -76,10 +87,12 @@ class BankingSystem:
         if amount <= 0:
             print("Invalid amount.")
             return
-
+        
+        # Adding the amount to the user's balance
         self.users[self.logged_in_user]['balance'] += amount
         print(f"Deposited ${amount:.2f}")
 
+    # Method to withdraw money from the logged-in user's account
     def withdraw(self, amount):
         if not self.logged_in_user:
             print("Please log in first.")
@@ -88,14 +101,17 @@ class BankingSystem:
         if amount <= 0:
             print("Invalid amount.")
             return
-
+        
+        # Checking if the user has enough balance
         if self.users[self.logged_in_user]['balance'] < amount:
             print("Insufficient funds.")
             return
-
+        
+        # Subtracting the amount from the user's balance
         self.users[self.logged_in_user]['balance'] -= amount
         print(f"Withdrawn ${amount:.2f}")
-
+    
+    # Method to transfer money to another user
     def transfer(self, recipient, amount):
         if not self.logged_in_user:
             print("Please log in first.")
@@ -125,7 +141,9 @@ class BankingSystem:
         balance = self.users[self.logged_in_user]['balance']
         print(f"Your current balance is ${balance:.2f}")
 
+
     def logout(self):
+        # Method to logout the currently logged-in user
         if not self.logged_in_user:
             print("No user is currently logged in.")
             return

@@ -1,6 +1,5 @@
-import sys
-sys.path.append('/home/tom/code_workbench/OnlineBankingApp')
 from onlinebanking_system.banking import BankingSystem
+from onlinebanking_system.interest import BankingSystem
 
 def main():
     # Main function to run the banking system
